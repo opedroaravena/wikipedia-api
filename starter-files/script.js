@@ -48,3 +48,37 @@ const isInputEmpty = (input) => {
 const showError = (error) => {
   errorSpan.innerHTML = `${error}`;
 };
+
+const showResults = () => {};
+
+const getData = async () => {
+  const userInput = input.value;
+  if (isInputEmpty(userInput)) return;
+
+  params.gsrsearch = userInput;
+  disableUi();
+
+  try {
+    const { data } = await axios.get(endpoint, { params });
+    console.log(data);
+
+    if (data.error) throw new Error(data.error.info);
+  } catch (error) {
+    showError(error);
+  } finally {
+    enableUi;
+  }
+};
+
+const handlerKeyEvent = (e) => {
+  if (e.key === "Enter") {
+    getData();
+  }
+};
+
+const registerEventHandlers = () => {
+  input.addEventListener("keydown", handlerKeyEvent);
+  submitButton.addEventListener("click", getData);
+};
+
+registerEventHandlers();
